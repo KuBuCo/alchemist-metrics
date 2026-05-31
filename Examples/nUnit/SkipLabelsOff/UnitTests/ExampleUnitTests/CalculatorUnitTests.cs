@@ -1,0 +1,38 @@
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+using Example;
+
+namespace UnitTests
+{
+    public class CalculatorUnitTests
+    {
+        private readonly Calculator _instance;
+        public CalculatorUnitTests()
+        {
+            _instance = new Calculator();
+        }
+
+        [Test, Ignore("Unit test not implemented.")]
+        public void Add_UnitTestPlaceholder()
+        {
+            {
+                Assert.Pass(); // manual-edit-preserved
+            }
+        }
+
+        public void ManualHelper()
+        {
+        }
+
+        [Test, Ignore("Unit test not implemented.")]
+        public void Subtract_UnitTestPlaceholder()
+        {
+            {
+                Assert.Fail("Scaffolded Unit Test");
+            }
+        }
+    }
+}

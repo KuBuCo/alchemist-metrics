@@ -12,7 +12,7 @@ Directory names use this format:
 For example, `xunit-update-labels-on` shows the output from:
 
 ```bash
-alchemist --solution ./Demo.sln --framework xUnit --regeneration.mode Update --regeneration.labels true
+alchemist --solution ./Example.sln --framework xUnit --regeneration.mode Update --regeneration.labels true
 ```
 
 The matrix contains:
@@ -25,8 +25,6 @@ The matrix contains:
 
 Inside each example:
 
-- `DemoApp/` is the source project Alchemist inspects.
+- `Example/` is the source project Alchemist inspects.
 - `UnitTests/` is the generated result.
-- `initial-run.txt` captures the seed generation run.
-- `final-run.txt` captures the run for the directory's option combination.
 - `README.md` states the exact command and behavior to inspect.

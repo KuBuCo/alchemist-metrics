@@ -1,6 +1,0 @@
-info: Alchemist.Utilities.SolutionProcessor[0]
-      Found 1 source project(s).
-info: Alchemist.Utilities.SolutionProcessor[0]
-      Processing project DemoApp.csproj (1/1, 1 source file(s)).
-info: Alchemist.Infrastructure.ApplicationRunner[0]
-      Unit test generation complete. Processed 1 project and 1 source file. Created 1 test file, updated 0, left 0 unchanged, skipped 0 without public methods, and skipped 0 due to source analysis gaps.

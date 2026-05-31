@@ -1,3 +1,24 @@
-**/bin/
-**/obj/
+# Rider
+.idea/
+*.iml
+
+# Artificial Intelligence
+.ai/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.DotSettings.user*
+
+# Builds
+[Bb]in/
+[Oo]bj/
+[Pp]ackages/
+_UpgradeReport_Files/
+
+# Operating System
 .DS_Store
+__MACOSX/
+Thumbs.db
+Desktop.ini
