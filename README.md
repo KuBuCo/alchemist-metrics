@@ -1,4 +1,4 @@
-# Alchemist Demo
+# Alchemist Metrics
 
 Companion examples for
 [`KuBuCo.Alchemist`](https://kubuco.github.io/alchemist/readme/).
