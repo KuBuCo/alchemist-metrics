@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 examples_dir="$repo_root/Examples"
-alchemist_command="${ALCHEMIST_COMMAND:-alchemist}"
+alchemist_command=""
 
 frameworks=("xUnit" "NUnit" "MSTest")
 modes=("Skip" "Update" "Replace")
@@ -11,16 +11,103 @@ labels=("true" "false")
 
 project_guid="{8E6A08D8-0838-4E5B-A6E3-0229C3022C5D}"
 
-slug_framework() {
-    printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+print_usage() {
+    cat <<'USAGE'
+Usage:
+  scripts/RegenerateExamples.sh [options]
+
+Options:
+  --alchemist <path>         Alchemist executable. Defaults to PATH lookup,
+                             then ~/.dotnet/tools/alchemist.
+  -h, --help                 Show this help text.
+USAGE
 }
 
-slug_labels() {
-    if [[ "$1" == "true" ]]; then
-        printf 'labels-on'
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --alchemist)
+            if [[ $# -lt 2 || "$2" == --* ]]; then
+                printf 'Missing value for --alchemist.\n' >&2
+                exit 1
+            fi
+
+            alchemist_command="$2"
+            shift 2
+            ;;
+        -h|--help)
+            print_usage
+            exit 0
+            ;;
+        *)
+            printf 'Unexpected argument: %s\n' "$1" >&2
+            print_usage >&2
+            exit 1
+            ;;
+    esac
+done
+
+staging_dir="${examples_dir}.tmp.$$"
+backup_dir="${examples_dir}.backup.$$"
+
+framework_directory() {
+    case "$1" in
+        xUnit)
+            printf 'xUnit'
+            ;;
+        NUnit)
+            printf 'nUnit'
+            ;;
+        MSTest)
+            printf 'msTest'
+            ;;
+        *)
+            printf 'Unsupported framework: %s\n' "$1" >&2
+            exit 1
+            ;;
+    esac
+}
+
+scenario_directory() {
+    local mode="$1"
+    local labels_enabled="$2"
+
+    if [[ "$labels_enabled" == "true" ]]; then
+        printf '%sLabelsOn' "$mode"
     else
-        printf 'labels-off'
+        printf '%sLabelsOff' "$mode"
     fi
+}
+
+resolve_alchemist() {
+    if [[ -n "$alchemist_command" ]]; then
+        return
+    fi
+
+    if command -v alchemist > /dev/null 2>&1; then
+        alchemist_command="$(command -v alchemist)"
+    elif [[ -x "$HOME/.dotnet/tools/alchemist" ]]; then
+        alchemist_command="$HOME/.dotnet/tools/alchemist"
+    else
+        printf 'Unable to find alchemist. Pass --alchemist <path> or install kubuco.alchemist.\n' >&2
+        exit 1
+    fi
+}
+
+cleanup() {
+    rm -rf "$staging_dir"
+}
+
+trap cleanup EXIT
+
+normalize_line_endings() {
+    local target="$1"
+
+    find "$target" -type f \( \
+        -name '*.cs' -o \
+        -name '*.csproj' -o \
+        -name '*.sln' -o \
+        -name '*.md' \
+    \) -exec perl -0pi -e 's/\r\n/\n/g' {} +
 }
 
 write_solution() {
@@ -178,18 +265,17 @@ run_alchemist() {
         --regeneration.labels "$labels_enabled"
 }
 
-rm -rf "$examples_dir"
-mkdir -p "$examples_dir"
+resolve_alchemist
+rm -rf "$staging_dir" "$backup_dir"
+mkdir -p "$staging_dir"
 
 for framework in "${frameworks[@]}"; do
-    framework_slug="$(slug_framework "$framework")"
+    framework_dir="$(framework_directory "$framework")"
 
     for mode in "${modes[@]}"; do
-        mode_slug="$(slug_framework "$mode")"
-
         for labels_enabled in "${labels[@]}"; do
-            label_slug="$(slug_labels "$labels_enabled")"
-            example_dir="$examples_dir/$framework_slug-$mode_slug-$label_slug"
+            scenario_dir="$(scenario_directory "$mode" "$labels_enabled")"
+            example_dir="$staging_dir/$framework_dir/$scenario_dir"
 
             mkdir -p "$example_dir"
             write_solution "$example_dir"
@@ -207,6 +293,20 @@ for framework in "${frameworks[@]}"; do
     done
 done
 
-find "$examples_dir" \( -name bin -o -name obj \) -type d -prune -exec rm -rf {} +
+find "$staging_dir" \( -name bin -o -name obj \) -type d -prune -exec rm -rf {} +
+normalize_line_endings "$staging_dir"
+
+if [[ -e "$examples_dir" ]]; then
+    mv "$examples_dir" "$backup_dir"
+fi
+
+if mv "$staging_dir" "$examples_dir"; then
+    rm -rf "$backup_dir"
+else
+    if [[ -e "$backup_dir" ]]; then
+        mv "$backup_dir" "$examples_dir"
+    fi
+    exit 1
+fi
 
 printf 'Generated %s example solutions in %s\n' "$(( ${#frameworks[@]} * ${#modes[@]} * ${#labels[@]} ))" "$examples_dir"

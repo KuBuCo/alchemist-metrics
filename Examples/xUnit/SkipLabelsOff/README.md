@@ -1,13 +1,23 @@
-# framework = xUnit | regeneration.mode = Skip | labels = false
+# xUnit / Skip / labels=false
+
+This example demonstrates:
+
+- Framework: `xUnit`
+- Regeneration mode: `Skip`
+- Regeneration labels: `false`
+
+Command used:
 
 ```bash
 alchemist --solution ./Example.sln --framework xUnit --regeneration.mode Skip --regeneration.labels false
 ```
 
-## Behaviour
+Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the final generated result.
 
-- `framework xUnit` write the unit tests using the xUnit framework.
-- `regeneration.mode Skip` keeps existing generated tests and appends missing generated tests.
-- `regeneration.labels false` omits `UnitTestID` comments and relies on method names for update matching.
+Expected behavior:
 
-Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the result.
+- `Skip` keeps the existing generated `Add_UnitTestPlaceholder` method body and appends the missing `Subtract_UnitTestPlaceholder` method.
+- `Update` regenerates the matching `Add_UnitTestPlaceholder` method, preserves `ManualHelper`, and appends `Subtract_UnitTestPlaceholder`.
+- `Replace` overwrites the generated test file from the current source shape.
+- `labels=true` emits `UnitTestID` comments on generated methods.
+- `labels=false` omits `UnitTestID` comments and relies on method names for update matching.

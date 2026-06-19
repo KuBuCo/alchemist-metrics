@@ -1,13 +1,23 @@
-# framework = nUnit | regeneration.mode = Replace | labels = false
+# NUnit / Replace / labels=false
+
+This example demonstrates:
+
+- Framework: `NUnit`
+- Regeneration mode: `Replace`
+- Regeneration labels: `false`
+
+Command used:
 
 ```bash
-alchemist --solution ./Example.sln --framework nUnit --regeneration.mode Replace --regeneration.labels false
+alchemist --solution ./Example.sln --framework NUnit --regeneration.mode Replace --regeneration.labels false
 ```
 
-## Behaviour
+Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the final generated result.
 
-- `framework nUnit` write the unit tests using the nUnit framework.
-- `regeneration.mode Replace` overwrites the generated test file from the current source shape.
-- `regeneration.labels false` omits `UnitTestID` comments and relies on method names for update matching.
+Expected behavior:
 
-Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the result.
+- `Skip` keeps the existing generated `Add_UnitTestPlaceholder` method body and appends the missing `Subtract_UnitTestPlaceholder` method.
+- `Update` regenerates the matching `Add_UnitTestPlaceholder` method, preserves `ManualHelper`, and appends `Subtract_UnitTestPlaceholder`.
+- `Replace` overwrites the generated test file from the current source shape.
+- `labels=true` emits `UnitTestID` comments on generated methods.
+- `labels=false` omits `UnitTestID` comments and relies on method names for update matching.

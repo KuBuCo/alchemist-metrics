@@ -2,8 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xunit;
 using Example;
+using System.Numerics;
 
 namespace UnitTests
 {
@@ -16,7 +16,7 @@ namespace UnitTests
             _instance = new Calculator();
         }
 
-        // [UnitTestID=F6B20D8D1CAE5A6B]
+        // [UnitTestID=24302AC885723D98]
         [TestMethod, Ignore("Unit test not implemented.")]
         public void Add_UnitTestPlaceholder()
         {
@@ -25,7 +25,7 @@ namespace UnitTests
             }
         }
 
-        // [UnitTestID=43507B1D6F1E7741]
+        // [UnitTestID=0BB63AD9EEE6A755]
         [TestMethod, Ignore("Unit test not implemented.")]
         public void Subtract_UnitTestPlaceholder()
         {

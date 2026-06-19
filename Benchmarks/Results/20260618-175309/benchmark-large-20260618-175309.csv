@@ -1,0 +1,2 @@
+scenario,framework,mode,labels,projects,methods,elapsedMilliseconds,methodsPerSecond,exitCode
+large-20260618-175309,xUnit,Replace,True,100,10000,7803.891,1281.412,0

@@ -76,3 +76,26 @@ Start with one framework and compare the three regeneration modes.
 
 Then compare the `LabelsOn` and `LabelsOff` variants to see whether generated
 methods include `UnitTestID` comments or method-name matching.
+
+## Regenerating Examples
+
+Run:
+
+```bash
+scripts/RegenerateExamples.sh
+```
+
+The script generates all scenarios in a staging location and replaces
+`Examples/` after the alchemist invocation succeeds.
+
+## Benchmarks
+
+The end-to-end benchmark runner measures one generated solution at a selected
+size, unit test framework and regeneration mode:
+
+```bash
+scripts/RunBenchmarks.sh --profile small
+```
+
+See [`Benchmarks/README.md`](Benchmarks/README.md) for the profile sizes and
+runner options.

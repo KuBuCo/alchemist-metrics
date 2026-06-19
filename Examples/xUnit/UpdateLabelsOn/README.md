@@ -1,13 +1,23 @@
-# framework = xUnit | regeneration.mode = Update | labels = true
+# xUnit / Update / labels=true
+
+This example demonstrates:
+
+- Framework: `xUnit`
+- Regeneration mode: `Update`
+- Regeneration labels: `true`
+
+Command used:
 
 ```bash
 alchemist --solution ./Example.sln --framework xUnit --regeneration.mode Update --regeneration.labels true
 ```
 
-## Behaviour
+Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the final generated result.
 
-- `framework xUnit` write the unit tests using the xUnit framework.
-- `regeneration.mode Update` regenerates matching generated tests, preserves manual tests, and appends missing generated tests.
-- `regeneration.labels true` emits `UnitTestID` comments on generated methods.
+Expected behavior:
 
-Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the result.
+- `Skip` keeps the existing generated `Add_UnitTestPlaceholder` method body and appends the missing `Subtract_UnitTestPlaceholder` method.
+- `Update` regenerates the matching `Add_UnitTestPlaceholder` method, preserves `ManualHelper`, and appends `Subtract_UnitTestPlaceholder`.
+- `Replace` overwrites the generated test file from the current source shape.
+- `labels=true` emits `UnitTestID` comments on generated methods.
+- `labels=false` omits `UnitTestID` comments and relies on method names for update matching.

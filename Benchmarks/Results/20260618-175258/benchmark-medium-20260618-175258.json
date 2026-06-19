@@ -1,0 +1,20 @@
+{
+  "startedAt": "2026-06-18T17:52:58.753555+00:00",
+  "completedAt": "2026-06-18T17:53:00.867887+00:00",
+  "profile": "Medium",
+  "alchemistVersion": "1.0.0-smoketest.20260613151302\u002Bsmoketests.796b155d6e6e7473bfa1b4a947f9c50abd70524d",
+  "dotnetVersion": "8.0.408",
+  "results": [
+    {
+      "scenario": "medium-20260618-175258",
+      "framework": "XUnit",
+      "mode": "Replace",
+      "labels": true,
+      "projectCount": 10,
+      "methodCount": 1000,
+      "elapsedMilliseconds": 2006.7037,
+      "methodsPerSecond": 498.32967368326473,
+      "exitCode": 0
+    }
+  ]
+}

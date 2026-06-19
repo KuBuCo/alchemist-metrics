@@ -1,13 +1,23 @@
-# framework = msTest | regeneration.mode = Replace | labels = true
+# MSTest / Replace / labels=true
+
+This example demonstrates:
+
+- Framework: `MSTest`
+- Regeneration mode: `Replace`
+- Regeneration labels: `true`
+
+Command used:
 
 ```bash
-alchemist --solution ./Example.sln --framework msTest --regeneration.mode Replace --regeneration.labels true
+alchemist --solution ./Example.sln --framework MSTest --regeneration.mode Replace --regeneration.labels true
 ```
 
-## Behaviour
+Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the final generated result.
 
-- `framework msTest` write the unit tests using the microsoft framework.
-- `regeneration.mode Replace` overwrites the generated test file from the current source shape.
-- `regeneration.labels true` emits `UnitTestID` comments on generated methods.
+Expected behavior:
 
-Inspect `UnitTests/ExampleUnitTests/CalculatorUnitTests.cs` to see the result.
+- `Skip` keeps the existing generated `Add_UnitTestPlaceholder` method body and appends the missing `Subtract_UnitTestPlaceholder` method.
+- `Update` regenerates the matching `Add_UnitTestPlaceholder` method, preserves `ManualHelper`, and appends `Subtract_UnitTestPlaceholder`.
+- `Replace` overwrites the generated test file from the current source shape.
+- `labels=true` emits `UnitTestID` comments on generated methods.
+- `labels=false` omits `UnitTestID` comments and relies on method names for update matching.

@@ -1,0 +1,2 @@
+scenario,framework,mode,labels,projects,methods,elapsedMilliseconds,methodsPerSecond,exitCode
+medium-20260618-175258,xUnit,Replace,True,10,1000,2006.704,498.33,0
