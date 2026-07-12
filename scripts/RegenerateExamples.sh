@@ -4,6 +4,7 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 examples_dir="$repo_root/Examples"
 alchemist_command=""
+alchemist_tool_dir=""
 
 frameworks=("xUnit" "NUnit" "MSTest")
 modes=("Skip" "Update" "Replace")
@@ -17,8 +18,10 @@ Usage:
   scripts/RegenerateExamples.sh [options]
 
 Options:
-  --alchemist <path>         Alchemist executable. Defaults to PATH lookup,
-                             then ~/.dotnet/tools/alchemist.
+  --alchemist <path>         Alchemist executable. Intended for a freshly
+                             downloaded tool path from CI. If omitted, this
+                             script installs the latest downloadable
+                             KuBuCo.Alchemist package into a temporary tool path.
   -h, --help                 Show this help text.
 USAGE
 }
@@ -83,18 +86,19 @@ resolve_alchemist() {
         return
     fi
 
-    if command -v alchemist > /dev/null 2>&1; then
-        alchemist_command="$(command -v alchemist)"
-    elif [[ -x "$HOME/.dotnet/tools/alchemist" ]]; then
-        alchemist_command="$HOME/.dotnet/tools/alchemist"
-    else
-        printf 'Unable to find alchemist. Pass --alchemist <path> or install kubuco.alchemist.\n' >&2
-        exit 1
-    fi
+    alchemist_tool_dir="${TMPDIR:-/tmp}/alchemist-regenerate-tools.$$"
+    rm -rf "$alchemist_tool_dir"
+    mkdir -p "$alchemist_tool_dir"
+
+    dotnet tool install \
+        --tool-path "$alchemist_tool_dir" \
+        KuBuCo.Alchemist >&2
+
+    alchemist_command="$alchemist_tool_dir/alchemist"
 }
 
 cleanup() {
-    rm -rf "$staging_dir"
+    rm -rf "$staging_dir" "$alchemist_tool_dir"
 }
 
 trap cleanup EXIT
@@ -154,6 +158,8 @@ CSPROJ
 write_initial_source() {
     local destination="$1"
 
+    mkdir -p "$destination/Example/Operations"
+
     cat > "$destination/Example/Calculator.cs" <<'CS'
 namespace Example;
 
@@ -165,10 +171,24 @@ public sealed class Calculator
     }
 }
 CS
+
+    cat > "$destination/Example/Operations/Multiplier.cs" <<'CS'
+namespace Example.Operations;
+
+public sealed class Multiplier
+{
+    public int Multiply(int left, int right)
+    {
+        return left * right;
+    }
+}
+CS
 }
 
 write_expanded_source() {
     local destination="$1"
+
+    mkdir -p "$destination/Example/Operations"
 
     cat > "$destination/Example/Calculator.cs" <<'CS'
 namespace Example;
@@ -183,6 +203,23 @@ public sealed class Calculator
     public int Subtract(int left, int right)
     {
         return left - right;
+    }
+}
+CS
+
+    cat > "$destination/Example/Operations/Multiplier.cs" <<'CS'
+namespace Example.Operations;
+
+public sealed class Multiplier
+{
+    public int Multiply(int left, int right)
+    {
+        return left * right;
+    }
+
+    public int Divide(int left, int right)
+    {
+        return left / right;
     }
 }
 CS
@@ -240,13 +277,17 @@ Command used:
 alchemist --solution ./Example.sln --framework $framework --regeneration.mode $mode --regeneration.labels $labels_enabled
 \`\`\`
 
-Inspect \`UnitTests/ExampleUnitTests/CalculatorUnitTests.cs\` to see the final generated result.
+Inspect these generated files to see the final generated result:
+
+- \`UnitTests/ExampleUnitTests/CalculatorUnitTests.cs\`
+- \`UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs\`
 
 Expected behavior:
 
 - \`Skip\` keeps the existing generated \`Add_UnitTestPlaceholder\` method body and appends the missing \`Subtract_UnitTestPlaceholder\` method.
 - \`Update\` regenerates the matching \`Add_UnitTestPlaceholder\` method, preserves \`ManualHelper\`, and appends \`Subtract_UnitTestPlaceholder\`.
 - \`Replace\` overwrites the generated test file from the current source shape.
+- Generated test files preserve the source-relative folder structure, so \`Example/Operations/Multiplier.cs\` generates \`UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs\`.
 - \`labels=true\` emits \`UnitTestID\` comments on generated methods.
 - \`labels=false\` omits \`UnitTestID\` comments and relies on method names for update matching.
 README

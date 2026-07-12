@@ -1,0 +1,42 @@
+name: Alchemist generated output
+
+on:
+  workflow_dispatch:
+    inputs:
+      alchemist_version:
+        description: Optional KuBuCo.Alchemist version to install. Empty installs the latest stable package.
+        required: false
+        type: string
+      package_source:
+        description: Optional NuGet package source URL, for example a GitHub Packages feed containing a just-built .nupkg.
+        required: false
+        type: string
+  schedule:
+    - cron: "17 4 * * *"
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  generated-output-drift:
+    name: Regenerate and verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Regenerate examples, build, and check drift
+        shell: bash
+        env:
+          ALCHEMIST_VERSION: ${{ inputs.alchemist_version }}
+          ALCHEMIST_PACKAGE_SOURCE: ${{ inputs.package_source }}
+          ALCHEMIST_PACKAGE_SOURCE_USERNAME: ${{ github.actor }}
+          ALCHEMIST_PACKAGE_SOURCE_TOKEN: ${{ secrets.ALCHEMIST_PACKAGE_SOURCE_TOKEN }}
+        run: scripts/RunAlchemistDriftCheck.sh
