@@ -110,8 +110,52 @@ normalize_line_endings() {
         -name '*.cs' -o \
         -name '*.csproj' -o \
         -name '*.sln' -o \
-        -name '*.md' \
+        -name '*.md' -o \
+        -name '.alchemist-generated-files.json' \
     \) -exec perl -0pi -e 's/\r\n/\n/g' {} +
+}
+
+refresh_generated_file_manifest_hashes() {
+    local target="$1"
+
+    while IFS= read -r manifest; do
+        MANIFEST_PATH="$manifest" perl \
+            -MDigest::SHA=sha256_hex \
+            -MFile::Basename=dirname \
+            -MFile::Spec \
+            -0777pi -e '
+                BEGIN {
+                    $manifest_path = $ENV{"MANIFEST_PATH"};
+                    $solution_directory = dirname(dirname($manifest_path));
+                }
+
+                $entry_count = s{
+                    ("Path":\s*"([^"]+)"\s*,\s*"ContentHash":\s*")
+                    [0-9A-Fa-f]{64}
+                    (")
+                }{
+                    @path_parts = split m{/}, $2;
+                    $generated_path = File::Spec->catfile(
+                        $solution_directory,
+                        @path_parts);
+
+                    open $generated_file, "<:raw", $generated_path
+                        or die "Could not read $generated_path: $!";
+                    local $/;
+                    $content = <$generated_file>;
+                    close $generated_file
+                        or die "Could not close $generated_path: $!";
+
+                    $1 . uc(sha256_hex($content)) . $3;
+                }gex;
+
+                die "No generated-file entries found in $manifest_path"
+                    if $entry_count == 0;
+            ' "$manifest"
+    done < <(find "$target" \
+        -path '*/UnitTests/.alchemist-generated-files.json' \
+        -type f \
+        | sort)
 }
 
 write_solution() {
@@ -336,6 +380,7 @@ done
 
 find "$staging_dir" \( -name bin -o -name obj \) -type d -prune -exec rm -rf {} +
 normalize_line_endings "$staging_dir"
+refresh_generated_file_manifest_hashes "$staging_dir"
 
 if [[ -e "$examples_dir" ]]; then
     mv "$examples_dir" "$backup_dir"

@@ -10,8 +10,9 @@ contains small source projects together with the `UnitTests` project generated
 for each supported test framework, regeneration mode and label setting.
 
 Generated output is intentionally checked in. Diffs in `Examples/**/UnitTests`,
-the generated `Example.sln` entries, or generated project files are behavior
-changes and should be reviewed rather than hidden with `.gitignore` rules.
+the generated `Example.sln` entries, generated project files, or
+`.alchemist-generated-files.json` ownership manifests are behavior changes and
+should be reviewed rather than hidden with `.gitignore` rules.
 
 ## What This Adds
 
@@ -20,6 +21,8 @@ changes and should be reviewed rather than hidden with `.gitignore` rules.
 - Examples with `regeneration.labels` enabled and disabled.
 - Checked-in generated test projects so behavior can be reviewed without running
   the tool first.
+- Checked-in ownership manifests so safe stale-file cleanup survives fresh
+  clones.
 - A nested source fixture that verifies generated tests preserve source-relative
   folders under `UnitTests/<SourceProjectName>UnitTests/...`.
 - Drift automation that regenerates examples with Alchemist, builds them, and
@@ -56,6 +59,8 @@ Each leaf example is a complete C# solution.
 
 - `Example/` contains the source project that alchemist inspects.
 - `UnitTests/` contains the generated unit test project.
+- `UnitTests/.alchemist-generated-files.json` records Alchemist-owned paths and
+  content hashes for safe stale-file cleanup.
 - `README.md` records the command and expected behavior for that scenario.
 - `Example/Operations/Multiplier.cs` verifies source-relative folder
   preservation by generating
