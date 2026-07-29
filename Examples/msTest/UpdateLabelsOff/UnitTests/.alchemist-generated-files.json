@@ -1,0 +1,13 @@
+{
+  "SchemaVersion": 1,
+  "Files": [
+    {
+      "Path": "UnitTests/ExampleUnitTests/CalculatorUnitTests.cs",
+      "ContentHash": "C2D874E19DD8D20159F5F5413B7A0839588E84686298A88495F5798A98DD0C85"
+    },
+    {
+      "Path": "UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs",
+      "ContentHash": "EC19D1431A107378AF1FC668C89FEDA4B50A3BF6E9D85FD48ED82E56C5A73987"
+    }
+  ]
+}
