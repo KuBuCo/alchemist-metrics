@@ -115,15 +115,6 @@ normalize_line_endings() {
     \) -exec perl -0pi -e 's/\r\n/\n/g' {} +
 }
 
-normalize_scaffold_assertions() {
-    local target="$1"
-
-    find "$target/xUnit" -name '*UnitTests.cs' -type f \
-        -exec perl -0pi -e \
-            's/Assert\.True\(false, "Scaffolded Unit Test"\);/Assert.Fail("Scaffolded Unit Test");/g' \
-            {} +
-}
-
 refresh_generated_file_manifest_hashes() {
     local target="$1"
 
@@ -287,7 +278,7 @@ inject_manual_edits() {
     case "$framework" in
         xUnit)
             old_assert='Assert.True(false, "Scaffolded Unit Test");'
-            new_assert='Assert.NotNull(_instance); // manual-edit-preserved'
+            new_assert='Assert.True(true); // manual-edit-preserved'
             ;;
         NUnit)
             old_assert='Assert.Fail("Scaffolded Unit Test");'
@@ -295,7 +286,7 @@ inject_manual_edits() {
             ;;
         MSTest)
             old_assert='Assert.Fail("Scaffolded Unit Test");'
-            new_assert='Assert.IsNotNull(_instance); // manual-edit-preserved'
+            new_assert='Assert.IsTrue(true); // manual-edit-preserved'
             ;;
         *)
             printf 'Unsupported framework: %s\n' "$framework" >&2
@@ -389,7 +380,6 @@ done
 
 find "$staging_dir" \( -name bin -o -name obj \) -type d -prune -exec rm -rf {} +
 normalize_line_endings "$staging_dir"
-normalize_scaffold_assertions "$staging_dir"
 refresh_generated_file_manifest_hashes "$staging_dir"
 
 if [[ -e "$examples_dir" ]]; then

@@ -19,7 +19,7 @@ namespace UnitTests.Operations
         public void Multiply_UnitTestPlaceholder()
         {
             {
-                Assert.Fail("Scaffolded Unit Test");
+                Assert.True(false, "Scaffolded Unit Test");
             }
         }
 
@@ -27,7 +27,7 @@ namespace UnitTests.Operations
         public void Divide_UnitTestPlaceholder()
         {
             {
-                Assert.Fail("Scaffolded Unit Test");
+                Assert.True(false, "Scaffolded Unit Test");
             }
         }
     }
