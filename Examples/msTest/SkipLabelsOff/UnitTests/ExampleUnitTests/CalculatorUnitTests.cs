@@ -20,7 +20,7 @@ namespace UnitTests
         public void Add_UnitTestPlaceholder()
         {
             {
-                Assert.IsTrue(true); // manual-edit-preserved
+                Assert.IsNotNull(_instance); // manual-edit-preserved
             }
         }
 

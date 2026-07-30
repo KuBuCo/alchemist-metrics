@@ -19,7 +19,7 @@ namespace UnitTests
         public void Add_UnitTestPlaceholder()
         {
             {
-                Assert.True(false, "Scaffolded Unit Test");
+                Assert.Fail("Scaffolded Unit Test");
             }
         }
 
@@ -31,7 +31,7 @@ namespace UnitTests
         public void Subtract_UnitTestPlaceholder()
         {
             {
-                Assert.True(false, "Scaffolded Unit Test");
+                Assert.Fail("Scaffolded Unit Test");
             }
         }
     }

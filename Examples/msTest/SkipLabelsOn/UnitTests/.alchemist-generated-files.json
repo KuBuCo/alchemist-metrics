@@ -3,7 +3,7 @@
   "Files": [
     {
       "Path": "UnitTests/ExampleUnitTests/CalculatorUnitTests.cs",
-      "ContentHash": "D7BC205CA2EF7F286F4CB5D862BF97F3EAA146FAF68EBCF75106965C25140BC0"
+      "ContentHash": "5BC78E2D5AB90F8C87E4F5AA41B55F9A22C40BAD993CBC3D8DB8FF68A133ECC8"
     },
     {
       "Path": "UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs",
