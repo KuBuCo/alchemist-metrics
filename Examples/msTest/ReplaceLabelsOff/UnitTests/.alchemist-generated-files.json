@@ -6,6 +6,10 @@
       "ContentHash": "C4D0FD81D7734DACBD9095F398C5DE56C8138303A1612BA58D3F2A95C44A83EC"
     },
     {
+      "Path": "UnitTests/ExampleUnitTests/Construction/PrimitiveSubjectUnitTests.cs",
+      "ContentHash": "67BC627D299A2322375C18E71A111566C7E7D0048B6F9BF925576EA7A783594F"
+    },
+    {
       "Path": "UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs",
       "ContentHash": "EC19D1431A107378AF1FC668C89FEDA4B50A3BF6E9D85FD48ED82E56C5A73987"
     }

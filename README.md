@@ -25,6 +25,8 @@ should be reviewed rather than hidden with `.gitignore` rules.
   clones.
 - A nested source fixture that verifies generated tests preserve source-relative
   folders under `UnitTests/<SourceProjectName>UnitTests/...`.
+- A primitive-constructor fixture that verifies non-mockable constructor
+  parameters use `default` arguments instead of invalid mock declarations.
 - Drift automation that regenerates examples with Alchemist, builds them, and
   fails when generated output differs from the checked-in state.
 
@@ -65,6 +67,9 @@ Each leaf example is a complete C# solution.
 - `Example/Operations/Multiplier.cs` verifies source-relative folder
   preservation by generating
   `UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs`.
+- `Example/Construction/PrimitiveSubject.cs` verifies non-mockable constructor
+  parameters by generating a fixture that calls `new PrimitiveSubject(default)`
+  without declaring `Mock<int>`.
 
 ## Example Matrix
 
@@ -74,11 +79,12 @@ Each leaf example is a complete C# solution.
 | `nUnit`   | labels on/off | labels on/off | labels on/off |
 | `msTest`  | labels on/off | labels on/off | labels on/off |
 
-The examples all start with generated `Add_UnitTestPlaceholder` and
-`Multiply_UnitTestPlaceholder` methods. The source is then expanded with
-`Subtract` and `Divide` methods and Alchemist is run again. That final
-checked-in state shows how each regeneration mode handles existing generated
-methods, manual helper methods, new methods and nested source-relative output.
+The examples all start with generated `Add_UnitTestPlaceholder`,
+`Measure_UnitTestPlaceholder` and `Multiply_UnitTestPlaceholder` methods. The
+source is then expanded with `Subtract` and `Divide` methods and Alchemist is run
+again. That final checked-in state shows how each regeneration mode handles
+existing generated methods, manual helper methods, new methods, nested
+source-relative output and primitive constructor parameters.
 
 ## How to Read the Examples
 

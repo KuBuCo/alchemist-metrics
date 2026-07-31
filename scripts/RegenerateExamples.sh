@@ -202,7 +202,9 @@ CSPROJ
 write_initial_source() {
     local destination="$1"
 
-    mkdir -p "$destination/Example/Operations"
+    mkdir -p \
+        "$destination/Example/Construction" \
+        "$destination/Example/Operations"
 
     cat > "$destination/Example/Calculator.cs" <<'CS'
 namespace Example;
@@ -212,6 +214,25 @@ public sealed class Calculator
     public int Add(int left, int right)
     {
         return left + right;
+    }
+}
+CS
+
+    cat > "$destination/Example/Construction/PrimitiveSubject.cs" <<'CS'
+namespace Example.Construction;
+
+public sealed class PrimitiveSubject
+{
+    private readonly int _count;
+
+    public PrimitiveSubject(int count)
+    {
+        _count = count;
+    }
+
+    public int Measure()
+    {
+        return _count;
     }
 }
 CS
@@ -232,7 +253,9 @@ CS
 write_expanded_source() {
     local destination="$1"
 
-    mkdir -p "$destination/Example/Operations"
+    mkdir -p \
+        "$destination/Example/Construction" \
+        "$destination/Example/Operations"
 
     cat > "$destination/Example/Calculator.cs" <<'CS'
 namespace Example;
@@ -247,6 +270,25 @@ public sealed class Calculator
     public int Subtract(int left, int right)
     {
         return left - right;
+    }
+}
+CS
+
+    cat > "$destination/Example/Construction/PrimitiveSubject.cs" <<'CS'
+namespace Example.Construction;
+
+public sealed class PrimitiveSubject
+{
+    private readonly int _count;
+
+    public PrimitiveSubject(int count)
+    {
+        _count = count;
+    }
+
+    public int Measure()
+    {
+        return _count;
     }
 }
 CS
@@ -324,6 +366,7 @@ alchemist --solution ./Example.sln --framework $framework --regeneration.mode $m
 Inspect these generated files to see the final generated result:
 
 - \`UnitTests/ExampleUnitTests/CalculatorUnitTests.cs\`
+- \`UnitTests/ExampleUnitTests/Construction/PrimitiveSubjectUnitTests.cs\`
 - \`UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs\`
 
 Expected behavior:
@@ -332,6 +375,7 @@ Expected behavior:
 - \`Update\` regenerates the matching \`Add_UnitTestPlaceholder\` method, preserves \`ManualHelper\`, and appends \`Subtract_UnitTestPlaceholder\`.
 - \`Replace\` overwrites the generated test file from the current source shape.
 - Generated test files preserve the source-relative folder structure, so \`Example/Operations/Multiplier.cs\` generates \`UnitTests/ExampleUnitTests/Operations/MultiplierUnitTests.cs\`.
+- Non-mockable constructor parameters use \`default\` arguments instead of invalid mock declarations, so \`PrimitiveSubject(int count)\` generates \`new PrimitiveSubject(default)\` without \`Mock<int>\`.
 - \`labels=true\` emits \`UnitTestID\` comments on generated methods.
 - \`labels=false\` omits \`UnitTestID\` comments and relies on method names for update matching.
 README
