@@ -9,6 +9,7 @@ alchemist_package_source_username="${ALCHEMIST_PACKAGE_SOURCE_USERNAME:-}"
 alchemist_package_source_token="${ALCHEMIST_PACKAGE_SOURCE_TOKEN:-}"
 alchemist_tool_path="${ALCHEMIST_TOOL_PATH:-${RUNNER_TEMP:-/tmp}/alchemist-tools}"
 nuget_config_dir="${RUNNER_TEMP:-/tmp}/alchemist-nuget-config"
+allow_drift="${ALCHEMIST_ALLOW_DRIFT:-false}"
 
 install_alchemist() {
     rm -rf "$alchemist_tool_path"
@@ -99,8 +100,13 @@ main() {
 
     build_example_solutions
     build_generated_test_projects
+    python3 "$repo_root/scripts/ValidateGeneratedOutput.py"
 
-    check_generated_output_drift
+    if [[ "$allow_drift" == "true" ]]; then
+        printf 'Generated-output drift is allowed for synchronization.\n'
+    else
+        check_generated_output_drift
+    fi
 }
 
 main "$@"

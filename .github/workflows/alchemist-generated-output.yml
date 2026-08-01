@@ -3,12 +3,40 @@ name: Alchemist Output
 on:
   workflow_dispatch:
     inputs:
+      validation_mode:
+        description: Regenerate with a package or validate already synchronized committed output.
+        required: true
+        type: choice
+        default: regenerate
+        options:
+          - regenerate
+          - committed
       alchemist_version:
         description: Optional KuBuCo.Alchemist version to install. Empty installs the latest stable package.
         required: false
         type: string
       package_source:
         description: Optional NuGet package source URL, for example a GitHub Packages feed containing a just-built .nupkg.
+        required: false
+        type: string
+      alchemist_source_sha:
+        description: Alchemist commit that produced synchronized output.
+        required: false
+        type: string
+      metrics_base_sha:
+        description: Metrics master commit used as the synchronization base.
+        required: false
+        type: string
+      metrics_head_sha:
+        description: Exact synchronized metrics commit to validate.
+        required: false
+        type: string
+      companion_pr:
+        description: Companion metrics pull request number.
+        required: false
+        type: string
+      correlation_id:
+        description: Cross-repository synchronization correlation ID.
         required: false
         type: string
   schedule:
@@ -32,11 +60,44 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Verify Correlated Commit
+        if: inputs.validation_mode == 'committed'
+        shell: bash
+        env:
+          EXPECTED_HEAD_SHA: ${{ inputs.metrics_head_sha }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${EXPECTED_HEAD_SHA}" || "${GITHUB_SHA}" != "${EXPECTED_HEAD_SHA}" ]]; then
+            echo "Expected metrics commit '${EXPECTED_HEAD_SHA}', but checked out '${GITHUB_SHA}'."
+            exit 1
+          fi
+
+      - name: Validate Synchronized Output Contracts
+        if: inputs.validation_mode == 'committed'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 scripts/ValidateGeneratedOutput.py
+          dotnet restore AlchemistMetrics.sln
+          dotnet build AlchemistMetrics.sln --no-restore
+
+          while IFS= read -r solution; do
+            dotnet restore "${solution}"
+            dotnet build "${solution}" --no-restore
+          done < <(find Examples -name Example.sln -type f | sort)
+
+          while IFS= read -r project; do
+            dotnet build "${project}" --no-restore
+          done < <(find Examples -path '*/UnitTests/UnitTests.csproj' -type f | sort)
+
       - name: Regenerate Examples, Build and Check Drift
+        if: inputs.validation_mode != 'committed'
         shell: bash
         env:
           ALCHEMIST_VERSION: ${{ inputs.alchemist_version }}
           ALCHEMIST_PACKAGE_SOURCE: ${{ inputs.package_source }}
           ALCHEMIST_PACKAGE_SOURCE_USERNAME: ${{ github.actor }}
-          ALCHEMIST_PACKAGE_SOURCE_TOKEN: ${{ secrets.ALCHEMIST_PACKAGE_SOURCE_TOKEN }}
+          ALCHEMIST_PACKAGE_SOURCE_TOKEN: ${{ secrets.ALCHEMIST_PACKAGE_SOURCE_TOKEN || github.token }}
         run: scripts/RunAlchemistDriftCheck.sh
