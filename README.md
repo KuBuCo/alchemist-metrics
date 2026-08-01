@@ -131,7 +131,8 @@ Useful environment variables:
 The drift check installs Alchemist from downloadable package sources,
 regenerates all examples, restores and builds `AlchemistMetrics.sln`, restores
 and builds each example solution, builds each generated
-`UnitTests/UnitTests.csproj`, and finally runs `git diff --exit-code`.
+`UnitTests/UnitTests.csproj`, validates the complete 18-scenario semantic and
+ownership-manifest contract, and finally runs `git diff --exit-code`.
 
 ## GitHub Actions
 
@@ -142,15 +143,15 @@ and builds each example solution, builds each generated
   `KuBuCo.Alchemist`;
 - manually against the latest downloadable package, or against an explicit
   downloadable `alchemist_version` and `package_source` when validating a
-  package feed.
+  package feed;
+- in `committed` mode against an exact synchronized branch commit, without
+  downloading Alchemist or receiving credentials from the private repository.
 
-For cross-repository dispatch from the main `alchemist` repository, trigger this
-workflow with the target package version and a NuGet feed containing the
-just-built package. A private feed requires the `alchemist-metrics` repository to
-define `ALCHEMIST_PACKAGE_SOURCE_TOKEN` with read access to that feed. For GitHub
-Packages, use a fine-grained PAT or equivalent token that can read packages from
-the publishing repository; the default `GITHUB_TOKEN` from the caller repository
-does not automatically grant package access in this repository.
+The private `alchemist` workflow exercises its exact local package while it
+regenerates a bot branch. It then dispatches this workflow in `committed` mode
+with the exact Alchemist source SHA, package version, metrics base/head SHAs,
+companion PR number and correlation ID. Public validation therefore receives no
+private source, package-feed credential or private-repository token.
 
 ## Benchmarks
 
