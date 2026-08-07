@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Example.Operations;
 using System.Numerics;
 
-namespace UnitTests.Operations
+namespace UnitTests.Example.Operations
 {
     [TestClass]
     public class MultiplierUnitTests
