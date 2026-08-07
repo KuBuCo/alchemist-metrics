@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Example;
 using System.Numerics;
 
-namespace UnitTests
+namespace UnitTests.Example
 {
     public class CalculatorUnitTests
     {

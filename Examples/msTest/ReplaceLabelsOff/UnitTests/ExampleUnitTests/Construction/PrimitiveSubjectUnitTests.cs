@@ -6,7 +6,7 @@ using Moq;
 using Example.Construction;
 using System.Numerics;
 
-namespace UnitTests.Construction
+namespace UnitTests.Example.Construction
 {
     [TestClass]
     public class PrimitiveSubjectUnitTests
