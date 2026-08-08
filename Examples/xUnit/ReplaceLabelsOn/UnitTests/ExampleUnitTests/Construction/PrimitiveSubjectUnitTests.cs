@@ -6,7 +6,7 @@ using Moq;
 using Example.Construction;
 using System.Numerics;
 
-namespace UnitTests.Construction
+namespace UnitTests.Example.Construction
 {
     public class PrimitiveSubjectUnitTests
     {
@@ -21,7 +21,7 @@ namespace UnitTests.Construction
         public void Measure_UnitTestPlaceholder()
         {
             {
-                Assert.True(false, "Scaffolded Unit Test");
+                Assert.Fail("Scaffolded Unit Test");
             }
         }
     }

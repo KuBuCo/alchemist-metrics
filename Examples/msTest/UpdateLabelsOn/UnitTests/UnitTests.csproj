@@ -12,6 +12,7 @@
 <PackageReference Include="Moq" Version="4.20.72" />
 <PackageReference Include="Castle.Core" Version="5.2.1" />
 <PackageReference Include="MSTest" Version="4.0.1" />
+<AssemblyAttribute Include="Microsoft.VisualStudio.TestTools.UnitTesting.DoNotParallelizeAttribute" />
       </ItemGroup>
       <ItemGroup>
         <ProjectReference Include="../Example/Example.csproj" />

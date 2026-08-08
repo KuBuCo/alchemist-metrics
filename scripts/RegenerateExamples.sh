@@ -319,7 +319,7 @@ inject_manual_edits() {
 
     case "$framework" in
         xUnit)
-            old_assert='Assert.True(false, "Scaffolded Unit Test");'
+            old_assert='Assert.Fail("Scaffolded Unit Test");'
             new_assert='Assert.True(true); // manual-edit-preserved'
             ;;
         NUnit)
@@ -328,7 +328,7 @@ inject_manual_edits() {
             ;;
         MSTest)
             old_assert='Assert.Fail("Scaffolded Unit Test");'
-            new_assert='Assert.IsTrue(true); // manual-edit-preserved'
+            new_assert='Assert.Inconclusive("Manual edit preserved."); // manual-edit-preserved'
             ;;
         *)
             printf 'Unsupported framework: %s\n' "$framework" >&2
@@ -338,7 +338,7 @@ inject_manual_edits() {
 
     OLD_ASSERT="$old_assert" NEW_ASSERT="$new_assert" perl -0pi -e 's/\Q$ENV{OLD_ASSERT}\E/$ENV{NEW_ASSERT}/g' "$test_file"
 
-    MANUAL_HELPER=$'\n\n        public void ManualHelper()\n        {\n        }\n' \
+    MANUAL_HELPER=$'\n\n        private void ManualHelper()\n        {\n        }\n' \
         perl -0pi -e 's/(\r?\n    }\r?\n}\s*)\z/$ENV{MANUAL_HELPER}$1/s' "$test_file"
 }
 

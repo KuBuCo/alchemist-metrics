@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Example;
 using System.Numerics;
 
-namespace UnitTests
+namespace UnitTests.Example
 {
     public class CalculatorUnitTests
     {
@@ -20,11 +20,11 @@ namespace UnitTests
         public void Add_UnitTestPlaceholder()
         {
             {
-                Assert.True(false, "Scaffolded Unit Test");
+                Assert.Fail("Scaffolded Unit Test");
             }
         }
 
-        public void ManualHelper()
+        private void ManualHelper()
         {
         }
 
@@ -33,7 +33,7 @@ namespace UnitTests
         public void Subtract_UnitTestPlaceholder()
         {
             {
-                Assert.True(false, "Scaffolded Unit Test");
+                Assert.Fail("Scaffolded Unit Test");
             }
         }
     }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Example;
 using System.Numerics;
 
-namespace UnitTests
+namespace UnitTests.Example
 {
     [TestClass]
     public class CalculatorUnitTests
@@ -21,11 +21,11 @@ namespace UnitTests
         public void Add_UnitTestPlaceholder()
         {
             {
-                Assert.IsTrue(true); // manual-edit-preserved
+                Assert.Inconclusive("Manual edit preserved."); // manual-edit-preserved
             }
         }
 
-        public void ManualHelper()
+        private void ManualHelper()
         {
         }
 
