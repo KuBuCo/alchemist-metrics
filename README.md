@@ -144,7 +144,7 @@ ownership-manifest contract, and finally runs `git diff --exit-code`.
 - manually against the latest downloadable package, or against an explicit
   downloadable `alchemist_version` and `package_source` when validating a
   package feed;
-- in `committed` mode against an exact synchronized branch commit, without
+- in `committed` mode against an exact aligned branch commit, without
   downloading Alchemist or receiving credentials from the private repository.
 
 The private `alchemist` workflow exercises its exact local package while it

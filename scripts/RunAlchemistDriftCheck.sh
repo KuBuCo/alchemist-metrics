@@ -103,7 +103,7 @@ main() {
     python3 "$repo_root/scripts/ValidateGeneratedOutput.py"
 
     if [[ "$allow_drift" == "true" ]]; then
-        printf 'Generated-output drift is allowed for synchronization.\n'
+        printf 'Generated-output drift is allowed for alignment.\n'
     else
         check_generated_output_drift
     fi

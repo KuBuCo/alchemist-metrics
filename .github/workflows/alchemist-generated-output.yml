@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       validation_mode:
-        description: Regenerate with a package or validate already synchronized committed output.
+        description: Regenerate with a package or validate already aligned committed output.
         required: true
         type: choice
         default: regenerate
@@ -20,15 +20,15 @@ on:
         required: false
         type: string
       alchemist_source_sha:
-        description: Alchemist commit that produced synchronized output.
+        description: Alchemist commit that produced aligned output.
         required: false
         type: string
       metrics_base_sha:
-        description: Metrics master commit used as the synchronization base.
+        description: Metrics master commit used as the alignment base.
         required: false
         type: string
       metrics_head_sha:
-        description: Exact synchronized metrics commit to validate.
+        description: Exact aligned metrics commit to validate.
         required: false
         type: string
       companion_pr:
@@ -36,7 +36,7 @@ on:
         required: false
         type: string
       correlation_id:
-        description: Cross-repository synchronization correlation ID.
+        description: Cross-repository alignment correlation ID.
         required: false
         type: string
   schedule:
@@ -73,7 +73,7 @@ jobs:
             exit 1
           fi
 
-      - name: Validate Synchronized Output Contracts
+      - name: Validate Aligned Output Contracts
         if: inputs.validation_mode == 'committed'
         shell: bash
         run: |
